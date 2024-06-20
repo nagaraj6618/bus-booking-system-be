@@ -9,6 +9,7 @@ const MONGODB_URL = process.env.MONGODB_URL;
 
 //importing Routes
 const authRoute = require('./routes/authRoute');
+const busRoute = require('./routes/busRoute');
 
 // console.log(PORT,MONGODB_URL);
 
