@@ -62,7 +62,22 @@ async function updateBookingById(req,res){
 }
 
 async function deleteBookingById(req,res){
-
+   const id = req.params.id;
+   try{
+      const deleteBooking = await ticketModel.findByIdAndDelete(id);
+      console.log(deleteBooking);
+      res.status(200).json({
+         message:"Deleted the ticket successfully.",
+         status:true
+      })
+   }
+   catch(error){
+      res.status(500).json({
+         message:error.message,
+         error:error,
+         success:false,
+      });
+   }
 }
 
 module.exports = {getAllBooking,getBookingById,addNewBooking,updateBookingById,deleteBookingById};
