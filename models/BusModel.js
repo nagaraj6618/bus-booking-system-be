@@ -11,7 +11,6 @@ const busSchema = mongoose.Schema({
    },
    busType:{
       type:Array,
-      enum:["ac","nonac","sleeper","normal"],
       default:["ac","sleeper"]
    },
    image:{

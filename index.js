@@ -20,8 +20,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(cors({origin:true,credentials:true}));
 
 
-//routes
-app.use('/api/v1/auth',authRoute);
+
 
 
 //Db Connection function
@@ -37,6 +36,9 @@ app.use('/api/v1/auth',authRoute);
       console.log('Db Connection Failed:\n',error);
    }
 })();
+//routes
+app.use("/api/v1/auth",authRoute);
+app.use("/api/v1/bus",busRoute);
 
 //Checking ..
 app.get('/api/v1',(req,res) => {
