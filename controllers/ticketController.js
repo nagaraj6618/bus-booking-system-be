@@ -15,7 +15,7 @@ async function getAllBooking(req,res){
             message:"Retrived all booked tickets.",
             success:true,
             data:userBookedTicket,
-         })
+         });
       }
 
       const AllBookedTicket = await ticketModel.find();
@@ -23,6 +23,25 @@ async function getAllBooking(req,res){
          message:"Retrived all booked tickets.",
          success:true,
          data:AllBookedTicket,
+      });
+   }
+   catch(error){
+      res.status(500).json({
+         message:error.message,
+         error:error,
+         success:false,
+      });
+   }
+   
+}
+async function getBookingById(res,res){
+   const id = req.params.id;
+   try{
+      const bookedTicket = await ticketModel.findById(id);
+      res.status(200).json({
+         message:"Retrived Booked Ticket details.",
+         success:true,
+         data:bookedTicket
       })
    }
    catch(error){
@@ -30,12 +49,8 @@ async function getAllBooking(req,res){
          message:error.message,
          error:error,
          success:false,
-      })
+      });
    }
-   
-}
-async function getBookingById(res,res){
-
 }
 
 async function addNewBooking(req,res){
