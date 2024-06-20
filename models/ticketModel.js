@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 
 const ticketSchema = mongoose.Schema(
    {
+      userId:{
+         type:String,
+         required:true,
+      },
       passengerIds:{
          type:[String],
          required:true

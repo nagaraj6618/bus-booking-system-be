@@ -40,7 +40,7 @@ app.use(cors({origin:true,credentials:true}));
 //routes
 app.use("/api/v1/auth",authRoute);
 app.use("/api/v1/bus",busRoute);
-app.use("api/v1/book",ticketRoute);
+app.use("/api/v1/book",ticketRoute);
 
 
 //Checking ..
