@@ -56,7 +56,7 @@ async function register(req,res){
    
 }
 async function login(req,res){
-   console.log(req.body);
+   // console.log(req.body);
    // const data = [];
    const {userNameOrEmail,password} = req.body;
    if(!userNameOrEmail || !password){
