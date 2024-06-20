@@ -24,15 +24,37 @@ function verifyAdmin(req,res,next){
    console.log(user)
    if(!user || user.role !== "admin"){
       return res.status(401).json({
-         message:"You are not authorized.",
-         success:true,
-      })
+         message:"Admin only authorized.",
+         success:false,
+      });
    }
    next();
 }
 
 function verifyUser(req,res,next){
-
+   const token = req.headers.authorization;
+   const user = verifyToken(token);
+   console.log(user);
+   if(!user || user.role !== "user" ){
+      return res.status(401).json({
+         message:"You are not authorized.Because you are not valid user.",
+         success:false
+      });
+   }
+   next()
+}
+//either Admin or Normal User
+function verifyValidUser(req,res,next){
+   const token = req.headers.authorization;
+   const user = verifyToken(token);
+   console.log(user);
+   if(!user){
+      return res.status(401).json({
+         message:"You are not authorized.Because you are not valid user.",
+         success:false
+      });
+   }
+   next();
 }
 
-module.exports = {verifyToken,verifyAdmin,verifyUser}
+module.exports = {verifyToken,verifyAdmin,verifyUser,verifyValidUser}
