@@ -1,6 +1,6 @@
 
 const busModel = require('../models/BusModel');
-const busRouteModel = require('../models/routeModel')
+// const busRouteModel = require('../models/routeModel')
 
 async function getAllBus(req, res) {
    try {
@@ -23,7 +23,7 @@ async function getAllBus(req, res) {
 async function getBusById(req, res) {
    try {
       const id = req.params.id;
-      let busData = await busModel.findById(id);
+      const busData = await busModel.findById(id);
 
       if (!busData) {
          return res.status(404).json({
@@ -31,30 +31,10 @@ async function getBusById(req, res) {
             message: "Bus not found",
          });
       }
-
-      const busRouteDetails = await busRouteModel.find({ busId: busData._id });
-
-      if (!busRouteDetails.length) {
-         return res.status(404).json({
-            success: false,
-            message: "Bus route details not found",
-         });
-      }
-
-      const { busRoute, minutesBetweenEachRoute } = busRouteDetails[0];
-
-
-      const busResponse = {
-         ...busData._doc,
-         busRoute,
-         minutesBetweenEachRoute,
-      };
-
-      console.log(busResponse);
       res.status(200).json({
          success: true,
          message: "Retrieved bus details by ID.",
-         data: busResponse,
+         data: busData,
       });
    } catch (error) {
       res.status(500).json({
@@ -83,7 +63,7 @@ async function addNewBus(req, res) {
             success:false
          });
    }
-   
+
    try {
       const isAlreadyBusRegistered = await busModel.findOne({
          busNumberPlate: busNumberPlate
@@ -97,16 +77,11 @@ async function addNewBus(req, res) {
       }
       const addBusData = await new busModel(
          {
-            busName, busNumberPlate, busType, image, fare, decreaseFare
+            busName, busNumberPlate, busType, image, fare, decreaseFare,busRoute,minutesBetweenEachRoute
          }
       );
       await addBusData.save();
-      const addBusRoute = await new busRouteModel({
-         busId: addBusData._id,
-         busRoute: busRoute,
-         minutesBetweenEachRoute: minutesBetweenEachRoute
-      });
-      await addBusRoute.save()
+
 
       res.status(200).json(
          {
@@ -124,10 +99,48 @@ async function addNewBus(req, res) {
       });
    }
 }
-async function updateBusDetails(req, res) {
 
+
+async function updateBusDetails(req, res) {
+   const {busDetails} = req.body;
+   const id = req.params.id;
+   console.log(busDetails);
+   try{
+      const updatedData = await busModel.findByIdAndUpdate({_id:id},busDetails);
+      res.status(200).json({
+         message:"Updated bus details successfully.",
+         success:true,
+         data:updatedData
+      })
+   }
+   catch(error){
+      res.status(500).json({
+         message: error.message,
+         status: false,
+         error: error
+      });
+   }
 }
 async function deleteBusById(req, res) {
+   const id = req.params.id;
+   try{
+      const deletedData = await busModel.findByIdAndDelete(id);
+      // if(!deletedData){
 
+      // }
+      console.log(deletedData);
+      res.status(200).json({
+         message:"Deleted bus details successfully.",
+         success:true,
+         data:deletedData
+      });
+   }
+   catch(error){
+      res.status(500).json({
+         message: "An error occured while deleting data.",
+         status: false,
+         error: error
+      });
+   }
 }
 module.exports = { getAllBus, getBusById, addNewBus, updateBusDetails, deleteBusById }
