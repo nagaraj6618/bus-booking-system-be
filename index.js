@@ -10,7 +10,7 @@ const MONGODB_URL = process.env.MONGODB_URL;
 //importing Routes
 const authRoute = require('./routes/authRoute');
 const busRoute = require('./routes/busRoute');
-
+const ticketRoute = require('./routes/ticketRoute');
 // console.log(PORT,MONGODB_URL);
 
 //middleware 
@@ -36,9 +36,12 @@ app.use(cors({origin:true,credentials:true}));
       console.log('Db Connection Failed:\n',error);
    }
 })();
+
 //routes
 app.use("/api/v1/auth",authRoute);
 app.use("/api/v1/bus",busRoute);
+app.use("api/v1/book",ticketRoute);
+
 
 //Checking ..
 app.get('/api/v1',(req,res) => {
