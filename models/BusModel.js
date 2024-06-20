@@ -10,14 +10,11 @@ const busSchema = mongoose.Schema({
       required:true,
    },
    busType:{
-      type:Array,
+      type:[String],
       default:["ac","sleeper"]
    },
    image:{
       type:[String]
-   },
-   busRoute:{
-      type:[Array],
    },
    fare:{
       type:Number,
