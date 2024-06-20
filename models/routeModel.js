@@ -14,6 +14,8 @@ const busRouteModel = mongoose.Schema({
    minutesBetweenEachRoute:{
       type:[Number]
    }
+},{
+   timestamps:true
 })
 
 module.exports = mongoose.model('busRouteModel',busRouteModel);

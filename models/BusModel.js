@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const busSchema = mongoose.Schema({
    busName:{
       type:String,
-      required:true
+      required:true,
+      
    },
    busNumberPlate:{
       type:String,
@@ -38,6 +39,8 @@ const busSchema = mongoose.Schema({
       type:[Number]
    }
 
+},{
+   timestamps:true
 })
 
 module.exports = mongoose.model('bus',busSchema );
