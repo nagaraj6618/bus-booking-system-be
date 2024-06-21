@@ -60,7 +60,13 @@ function isRouteInBusRoute (arr,start,end){
    }
    return false;
 }
+function checkDateIsValid(date){
+   const currentDate = new Date(Date.now());
+   const travelDate = new Date(date);
+   // console.log(currentDate<travelDate)
+   return currentDate<travelDate;
 
+}
 async function addNewTicketBooking(req,res){
    const {ticketDetails,passengerDetails,busId} = req.body.bookingDetails;
    // console.log({...ticketDetails,passengerDetails});
@@ -76,7 +82,12 @@ async function addNewTicketBooking(req,res){
    
    
    try{
-
+      if(!checkDateIsValid(ticketDetails.travelDate)){
+         return res.status(400).json({
+            message:"Time expired try another dates.",
+            success:false,
+         })
+      }
       const previousBookedDetails = await ticketModel.find({
          busId:busId,
          travelDate:ticketDetails.travelDate,
