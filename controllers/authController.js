@@ -8,7 +8,7 @@ async function register(req,res){
    if (!name || !userName || !email || !password) {
       return res.status(400).json({
          message: 'All fields are required',
-         status: false
+         success: false
       });
    }   
 
@@ -41,14 +41,14 @@ async function register(req,res){
       
       res.status(200).json({
          message:'User Signup Successfully',
-         status:true,
+         success:true,
          data:userData
       })
    }
    catch(error){
       res.status(500).json({
          message:error.message,
-         status:false,
+         success:false,
          error:error
       })
    }
@@ -56,13 +56,13 @@ async function register(req,res){
    
 }
 async function login(req,res){
-   // console.log(req.body);
+   console.log(req.body);
    // const data = [];
    const {userNameOrEmail,password} = req.body;
    if(!userNameOrEmail || !password){
       return res.status(400).json({
          message: "Username or email or password required",
-         status: false
+         success: false
       });
    }
    try{
@@ -79,7 +79,7 @@ async function login(req,res){
       if(!findUser){
          return res.status(404).json({
             message:"User not found please register the account.",
-            status:false
+            success:false
          })
       }
       // console.log(findUser);
@@ -108,7 +108,7 @@ async function login(req,res){
          secure:true,
       }).status(200).json({
          message:"User login successfull",
-         status:true,
+         success:true,
          data:findUser,
          token:token,
       })
@@ -116,7 +116,7 @@ async function login(req,res){
    catch(error){
       res.status(500).json({
          message:error.message,
-         status:false,
+         successfalse,
          error:error
       })
    }
