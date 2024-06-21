@@ -34,6 +34,13 @@ async function getBusById(req, res) {
          });
       }
       const travelDate = req.query.date
+      if(!travelDate){
+         return res.status(200).json({
+            success: true,
+            message: "Retrieved bus details by ID.",
+            data: {busData}
+         });
+      }
       console.log(travelDate)
       const bookedTicket = await ticketModel.find({
          busId:id,
