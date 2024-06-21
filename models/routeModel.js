@@ -10,7 +10,16 @@ const busRouteModel = mongoose.Schema({
       type:[String],
       required:true
    },
-   
+   startTime:{
+      type:String
+   },
+   endTime:{
+      type:String,
+   },
+   totalTime:{
+      type:String,
+      required:true
+   },
    minutesBetweenEachRoute:{
       type:[Number]
    }

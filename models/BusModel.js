@@ -31,13 +31,23 @@ const busSchema = mongoose.Schema({
       required:true,
       default:3
    },
-   busRoute:{
-      type:[String],
-      required:true
-   },
+   
    minutesBetweenEachRoute:{
       type:[Number]
+   },
+   startTime:{
+      type:Number
+   },
+   endTime:{
+      type:Number
+   },
+   totalTime:{
+      type:Number
+   },
+   busRoute:{
+      type:[String]
    }
+   
 
 },{
    timestamps:true

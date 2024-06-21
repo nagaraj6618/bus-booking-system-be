@@ -1,5 +1,6 @@
 
 const busModel = require('../models/BusModel');
+// const routeModel = require('../models/routeModel');
 // const busRouteModel = require('../models/routeModel')
 
 async function getAllBus(req, res) {
@@ -47,17 +48,19 @@ async function getBusById(req, res) {
 
 
 async function addNewBus(req, res) {
-   console.log(req.body);
+   // console.log(req.body);
    const {
       busName, busNumberPlate,
       busType, image,
       fare, decreaseFare,
-      busRoute, minutesBetweenEachRoute
+      busRoute, minutesBetweenEachRoute,startTime,totalTime
    } = req.body;
    if (!busName || !busNumberPlate
       || !busType || !image
       || !fare || !decreaseFare
-      || !busRoute || !minutesBetweenEachRoute) {
+      || !busRoute || !minutesBetweenEachRoute
+      || !startTime || !totalTime
+      ) {
          return res.status(400).json({
             message:"Provide All the details.",
             success:false
@@ -65,23 +68,53 @@ async function addNewBus(req, res) {
    }
 
    try {
-      const isAlreadyBusRegistered = await busModel.findOne({
-         busNumberPlate: busNumberPlate
-      })
-      console.log(isAlreadyBusRegistered)
-      if (isAlreadyBusRegistered) {
+      
+      const isAlreadyBusRegistered = await busModel.find({
+         busNumberPlate: busNumberPlate,
+         endTime: { $gt: (startTime+2)%24 }
+      
+         
+      });
+      // console.log(isAlreadyBusRegistered)
+      let endTimeOfTravel = (totalTime+startTime)%24;
+      
+      if (isAlreadyBusRegistered.length>0 ) {
+         
          return res.status(400).json({
             message: "Bus Already Registered.",
             success: false,
          })
       }
+      
+      
+      
       const addBusData = await new busModel(
          {
-            busName, busNumberPlate, busType, image, fare, decreaseFare,busRoute,minutesBetweenEachRoute
+            busName:busName,
+            busNumberPlate:busNumberPlate, 
+            busType:busType, 
+            image:image, 
+            fare:fare, 
+            decreaseFare:decreaseFare,
+            startTime:startTime,
+            busRoute:busRoute,
+            endTime:endTimeOfTravel,
+            totalTime:totalTime,
+            minutesBetweenEachRoute:minutesBetweenEachRoute
          }
       );
       await addBusData.save();
-
+      console.log(addBusData)
+      // let addBusRoute = [];
+     
+      // const addBusRouteData = await new routeModel({
+      //    busId:addBusData._id,
+      //    startTime:startTime,
+      //    busRoute:busRoute,
+      //    endTime:endTimeOfTravel,
+      //    totalTime:totalTime,
+      //    minutesBetweenEachRoute:minutesBetweenEachRoute
+      // })
 
       res.status(200).json(
          {
