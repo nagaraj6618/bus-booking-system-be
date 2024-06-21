@@ -1,9 +1,10 @@
 const ticketModel = require("../models/ticketModel");
 const passengerModel = require("../models/passengerModel");
 const { verifyToken } = require("./authVerify");
+const BusModel = require("../models/BusModel");
 
 
-async function getAllBooking(req,res){
+async function getAllBookedTicket(req,res){
    const token = req.headers.authorization;
    const isUser = verifyToken(token);
    try{
@@ -34,7 +35,7 @@ async function getAllBooking(req,res){
    }
    
 }
-async function getBookingById(res,res){
+async function getBookedTicketById(res,res){
    const id = req.params.id;
    try{
       const bookedTicket = await ticketModel.findById(id);
@@ -53,15 +54,137 @@ async function getBookingById(res,res){
    }
 }
 
-async function addNewBooking(req,res){
+function isRouteInBusRoute (arr,start,end){
+   if(arr.includes(start) && arr.includes(end)){
+      return true;
+   }
+   return false;
+}
+
+async function addNewTicketBooking(req,res){
+   const {ticketDetails,passengerDetails,busId} = req.body.bookingDetails;
+   // console.log({...ticketDetails,passengerDetails});
+   if(!ticketDetails || !passengerDetails){
+      return res.status(400).json({
+         message:"Provide Valid details..",
+         success:false,
+      })
+   }
+   //get User id from token
+   const userDetails = verifyToken(req.headers.authorization);
+   // console.log(userDetails);
+   
+   
+   try{
+
+      const previousBookedDetails = await ticketModel.find({
+         busId:busId,
+         travelDate:ticketDetails.travelDate,
+         travelTime:ticketDetails.travelTime
+         
+      });
+
+      if(previousBookedDetails.length > 20){
+         return res.status(200).json({
+            message:"All seats are booked.",
+            success:false,
+         });
+      }
+      // console.log(previousBookedDetails.length);
+      const filteredPreviousBookedDetails = previousBookedDetails.filter((booked) => {
+         for (let i=0;i<ticketDetails.seatNumber.length;i++){
+   
+            if(booked.seatNumber.includes(ticketDetails.seatNumber[i])){
+               
+               return booked;
+            }  
+         }
+      })
+      // console.log("filtered Book ",filteredPreviousBookedDetails);
+      if(filteredPreviousBookedDetails.length>0){
+         
+         return res.status(400).json({
+            message:"Selected ticket already booked",
+            success:false,
+         })
+      
+      }
+      
+      const busDetails = await BusModel.findById(busId);
+      
+      let priceForEachPassenger = busDetails.fare;
+      let decreaseFareEachStopping = busDetails.decreaseFare;
+      let fromLocation = ticketDetails.from;
+      let toLocation = ticketDetails.to;
+      // console.log(busDetails)
+      
+      if(!isRouteInBusRoute(busDetails.busRoute,fromLocation,toLocation)){
+         return res.status(404).json({
+            message:"Given route is not matching with bus route",
+            success:false,
+         })
+      }
+
+
+      let decreaseFarePriceCount = busDetails.busRoute.length 
+      - Math.abs(busDetails.busRoute.indexOf(toLocation)
+      >busDetails.busRoute.indexOf(fromLocation)
+      ?busDetails.busRoute.indexOf(toLocation)
+      :busDetails.busRoute.indexOf(fromLocation));
+
+      let totalPrice = (priceForEachPassenger*ticketDetails.numberOfSeat) - (decreaseFarePriceCount*decreaseFareEachStopping);
+
+      // console.log(busDetails,priceForEachPassenger,decreaseFareEachStopping,totalPrice);
+
+      // const addPassengerDetails = await passengerModel()
+      const passengerData = await new passengerModel({
+         passengerDetails:passengerDetails.passengerList,
+         busId:busId,
+         userId:userDetails.id,
+      })
+      // console.log(passengerData);
+
+      await passengerData.save();
+      
+      const ticketBookData =await new ticketModel({
+         userId:userDetails.id,
+         busId:busId,
+         passengerId:passengerData._id,
+         from:fromLocation,
+         to:toLocation,
+         travelDate:ticketDetails.travelDate,
+         travelTime:ticketDetails.travelTime,
+         bookedAt:new Date(Date.now()),
+         numberOfSeat:ticketDetails.numberOfSeat,
+         price:totalPrice,
+         seatNumber:ticketDetails.seatNumber
+
+      });
+
+      await ticketBookData.save();
+
+      // console.log(ticketBookData)
+      
+      res.status(200).json({
+         message:"Ticket Booked.",
+         success:true,
+         data:ticketBookData,passengerData,
+      })
+   }
+   catch(error){
+      res.status(500).json({
+         message:"Ticket Cannot be booked.",
+         success:false,
+         error:error
+      })
+   }
+}
+
+async function updateBookedTicketById(req,res){
 
 }
 
-async function updateBookingById(req,res){
-
-}
-
-async function deleteBookingById(req,res){
+async function deleteBookedTicketById(req,res){
    const id = req.params.id;
    try{
       const deleteBooking = await ticketModel.findByIdAndDelete(id);
@@ -80,4 +203,4 @@ async function deleteBookingById(req,res){
    }
 }
 
-module.exports = {getAllBooking,getBookingById,addNewBooking,updateBookingById,deleteBookingById};
+module.exports = {getAllBookedTicket,getBookedTicketById,addNewTicketBooking,updateBookedTicketById,deleteBookedTicketById};

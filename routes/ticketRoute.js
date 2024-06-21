@@ -1,11 +1,11 @@
 const express = require("express");
-const { getAllBooking, addNewBooking, getBookingById, updateBookingById, deleteBookingById,  } = require("../controllers/ticketController");
-const { verifyValidUser } = require("../controllers/authVerify");
+const { getAllBookedTicket, addNewTicketBooking, getBookedTicketById, updateBookedTicketById, deleteBookedTicketById,  } = require("../controllers/ticketController");
+const { verifyValidUser, verifyAdmin } = require("../controllers/authVerify");
 
 const router = express.Router();
 
-router.route("/").get(verifyValidUser,getAllBooking).post(verifyValidUser,addNewBooking);
-router.route("/:id").get(verifyValidUser,getBookingById).put(verifyValidUser,updateBookingById).delete(verifyValidUser,deleteBookingById);
+router.route("/").get(verifyValidUser,getAllBookedTicket).post(verifyValidUser,addNewTicketBooking);
+router.route("/:id").get(verifyValidUser,getBookedTicketById).put(verifyValidUser,updateBookedTicketById).delete(verifyAdmin,deleteBookedTicketById);
 
 
 module.exports = router;

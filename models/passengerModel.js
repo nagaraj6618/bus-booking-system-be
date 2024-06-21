@@ -1,22 +1,25 @@
 const mongoose = require("mongoose");
 
 const passengerSchema = mongoose.Schema({
-   passengerName:{
-      type:String,
-      required:true,
-      trim: true,
-   },
-   passengerAge:{
-      type:Number,
-      required:true,
-      min:0,
-      max:90
-   },
-   passengerGender:{
-      type:String,
-      enum:["male","female"],
-      required:true
-   },
+   passengerDetails:[
+      {
+         name:{
+            type:String,
+            required:true,
+         },
+         age:{
+            type:Number,
+            min:0,
+            max:90
+         },
+         gender:{
+            type:String,
+            enum:["male","female","Male","Female"],
+            required:true
+         },
+      }
+   ]  
+   ,
    busId:{
       type:String,
       required:true,
