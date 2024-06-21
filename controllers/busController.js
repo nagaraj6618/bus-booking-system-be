@@ -1,5 +1,6 @@
 
 const busModel = require('../models/BusModel');
+const ticketModel = require('../models/ticketModel');
 // const routeModel = require('../models/routeModel');
 // const busRouteModel = require('../models/routeModel')
 
@@ -32,10 +33,26 @@ async function getBusById(req, res) {
             message: "Bus not found",
          });
       }
+      const travelDate = req.query.date
+      console.log(travelDate)
+      const bookedTicket = await ticketModel.find({
+         busId:id,
+         travelDate:travelDate
+      })
+      console.log(bookedTicket);
+      let bookedSeat = [];
+      for(let i=0;i<bookedTicket.length;i++){
+         bookedTicket[i].seatNumber.map((data)=> {
+            bookedSeat.push(data);
+         })
+      }
+
+      bookedSeat.sort();
+
       res.status(200).json({
          success: true,
          message: "Retrieved bus details by ID.",
-         data: busData,
+         data: {busData,bookedSeat}
       });
    } catch (error) {
       res.status(500).json({

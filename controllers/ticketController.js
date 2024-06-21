@@ -64,7 +64,7 @@ function isRouteInBusRoute (arr,start,end){
 async function addNewTicketBooking(req,res){
    const {ticketDetails,passengerDetails,busId} = req.body.bookingDetails;
    // console.log({...ticketDetails,passengerDetails});
-   if(!ticketDetails || !passengerDetails){
+   if(!ticketDetails || !passengerDetails || !busId){
       return res.status(400).json({
          message:"Provide Valid details..",
          success:false,
@@ -91,6 +91,7 @@ async function addNewTicketBooking(req,res){
          });
       }
       // console.log(previousBookedDetails.length);
+      
       const filteredPreviousBookedDetails = previousBookedDetails.filter((booked) => {
          for (let i=0;i<ticketDetails.seatNumber.length;i++){
    
