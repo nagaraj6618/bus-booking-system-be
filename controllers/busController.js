@@ -17,10 +17,21 @@ async function getAllBus(req, res) {
          })
       }
       if(!fromLocation || !toLocation){
+         let totalBusRoute=[];
+         busData.map((data) => {
+            data.busRoute.map((routeData) => {
+               if(!totalBusRoute.includes(routeData)){
+                  totalBusRoute.push(routeData)
+               }
+               
+            })
+         })
+         totalBusRoute.sort();
          return res.status(200).json({
             message: "Retrived All Bus details",
             success: true,
             data: busData,
+            totalRoute:totalBusRoute,
          });
       };
       
