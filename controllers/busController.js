@@ -6,13 +6,48 @@ const ticketModel = require('../models/ticketModel');
 
 async function getAllBus(req, res) {
    try {
-
+      const fromLocation = req.query.fromLocation;
+      const toLocation = req.query.toLocation;
+      console.log(fromLocation,toLocation)
       const busData = await busModel.find();
-      res.status(200).json({
-         message: "Retrived All Bus details",
-         success: true,
-         data: busData,
+      if(busData.length<1){
+         return res.status(404).json({
+            message: "Bus route not found..",
+            success:false,
+         })
+      }
+      if(!fromLocation || !toLocation){
+         return res.status(200).json({
+            message: "Retrived All Bus details",
+            success: true,
+            data: busData,
+         });
+      };
+      
+      const filteredData = busData.filter((data,index) => {
+         const busRoute = data.busRoute;
+         if(
+            busRoute.includes(fromLocation.toLowerCase()) &&
+            busRoute.includes(toLocation.toLowerCase()) &&
+            busRoute.indexOf(fromLocation.toLowerCase()) <
+            busRoute.indexOf(toLocation.toLowerCase())
+         ){
+            return data;
+         }
       });
+      if(!filteredData.length>0){
+         return res.status(404).json({
+            message: "Bus route not found..",
+            success:false,
+         });
+      };
+
+      res.status(200).json({
+         message:"Retrived all the bus based on from and to location..",
+         data:filteredData
+      })
+
+      
    }
    catch (error) {
       res.status(500).json({
