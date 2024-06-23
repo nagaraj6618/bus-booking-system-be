@@ -128,10 +128,11 @@ async function addNewBus(req, res) {
       fare, decreaseFare,
       busRoute, minutesBetweenEachRoute,startTime,totalTime
    } = req.body;
+   console.log(req.body)
    if (!busName || !busNumberPlate
-      || !busType || !image
+      || !busType 
       || !fare || !decreaseFare
-      || !busRoute || !minutesBetweenEachRoute
+      || !busRoute 
       || !startTime || !totalTime
       ) {
          return res.status(400).json({
@@ -173,7 +174,7 @@ async function addNewBus(req, res) {
             busRoute:busRoute,
             endTime:endTimeOfTravel,
             totalTime:totalTime,
-            minutesBetweenEachRoute:minutesBetweenEachRoute
+            minutesBetweenEachRoute:minutesBetweenEachRoute||[]
          }
       );
       await addBusData.save();
