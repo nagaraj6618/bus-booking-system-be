@@ -142,15 +142,27 @@ async function addNewBus(req, res) {
    }
 
    try {
-      
+      const isAlreadyRegistered = await busModel.findOne({
+         busNumberPlate:busNumberPlate,
+         startTime:startTime,
+         totalTime:totalTime
+      });
+      if(isAlreadyRegistered){
+         return res.status(400).json({
+            message:"Already Registered.",
+            success:false,
+         })
+      }
+      // const isAlreadyBusRegistered = await busModel
       const isAlreadyBusRegistered = await busModel.find({
          busNumberPlate: busNumberPlate,
          endTime: { $gt: (startTime+2)%24 }
       
          
       });
-      // console.log(isAlreadyBusRegistered)
-      let endTimeOfTravel = (totalTime+startTime)%24;
+      console.log(isAlreadyBusRegistered)
+      let endTimeOfTravel = (totalTime+startTime)%24 ===0 ?12:(totalTime+startTime)%24;
+      console.log(endTimeOfTravel)
       
       if (isAlreadyBusRegistered.length>0 ) {
          
