@@ -95,7 +95,7 @@ async function addNewTicketBooking(req,res){
          
       });
 
-      if(previousBookedDetails.length > 20){
+      if(previousBookedDetails.length > 24){
          return res.status(200).json({
             message:"All seats are booked.",
             success:false,
