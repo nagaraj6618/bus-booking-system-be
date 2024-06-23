@@ -171,7 +171,7 @@ async function addNewBus(req, res) {
             fare:fare, 
             decreaseFare:decreaseFare,
             startTime:startTime,
-            busRoute:busRoute,
+            busRoute:busRoute.filter(data=>data!==""),
             endTime:endTimeOfTravel,
             totalTime:totalTime,
             minutesBetweenEachRoute:minutesBetweenEachRoute||[]
