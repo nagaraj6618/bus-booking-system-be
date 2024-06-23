@@ -79,15 +79,18 @@ async function getBusById(req, res) {
             message: "Bus not found",
          });
       }
-      const travelDate = req.query.date
+      const travelDate = req.query.date;
+      
       if(!travelDate){
+         
          return res.status(200).json({
             success: true,
             message: "Retrieved bus details by ID.",
-            data: {busData}
+            data: {busData,bookedSeat:[]}
          });
       }
       console.log(travelDate)
+      console.log(id);
       const bookedTicket = await ticketModel.find({
          busId:id,
          travelDate:travelDate
@@ -104,7 +107,7 @@ async function getBusById(req, res) {
 
       res.status(200).json({
          success: true,
-         message: "Retrieved bus details by ID.",
+         message: "Retrieved bus details by ID.q",
          data: {busData,bookedSeat}
       });
    } catch (error) {
