@@ -144,9 +144,10 @@ async function addNewBus(req, res) {
    try {
       const isAlreadyRegistered = await busModel.findOne({
          busNumberPlate:busNumberPlate,
-         startTime:startTime,
-         totalTime:totalTime
+         startTime:startTime
+
       });
+      console.log(isAlreadyRegistered)
       if(isAlreadyRegistered){
          return res.status(400).json({
             message:"Already Registered.",
