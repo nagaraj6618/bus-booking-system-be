@@ -38,10 +38,10 @@ async function getAllBus(req, res) {
       const filteredData = busData.filter((data,index) => {
          const busRoute = data.busRoute;
          if(
-            busRoute.includes(fromLocation.toLowerCase()) &&
-            busRoute.includes(toLocation.toLowerCase()) &&
-            busRoute.indexOf(fromLocation.toLowerCase()) <
-            busRoute.indexOf(toLocation.toLowerCase())
+            busRoute.includes(fromLocation) &&
+            busRoute.includes(toLocation) &&
+            busRoute.indexOf(fromLocation) <
+            busRoute.indexOf(toLocation)
          ){
             return data;
          }
@@ -147,6 +147,7 @@ async function addNewBus(req, res) {
          startTime:startTime
 
       });
+      console.log(isAlreadyRegistered)
       console.log(isAlreadyRegistered)
       if(isAlreadyRegistered){
          return res.status(400).json({
